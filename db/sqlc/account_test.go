@@ -63,3 +63,15 @@ func TestListAccounts(t *testing.T) {
 		require.NotEmpty(t, account.ID)
 	}
 }
+
+func TestUpdateAccount(t *testing.T) {
+	newAccount := createTestAccount(t)
+	newBalance := utils.RandomInt(1, 100)
+	arg := UpdateAccountParams{
+		ID:      newAccount.ID,
+		Balance: newBalance,
+	}
+	updateAccount, err := testStore.UpdateAccount(context.Background(), arg)
+	require.NoError(t, err)
+	require.Equal(t, arg.Balance, updateAccount.Balance)
+}
