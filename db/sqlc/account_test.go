@@ -5,6 +5,7 @@ import (
 	"log"
 	"testing"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/objectMaker/golang-bank/utils"
 	"github.com/stretchr/testify/require"
 )
@@ -74,4 +75,15 @@ func TestUpdateAccount(t *testing.T) {
 	updateAccount, err := testStore.UpdateAccount(context.Background(), arg)
 	require.NoError(t, err)
 	require.Equal(t, arg.Balance, updateAccount.Balance)
+}
+
+func TestDeleteAccount(t *testing.T) {
+	createAccount := createTestAccount(t)
+	deleteAccount, err := testStore.DeleteAccount(context.Background(), createAccount.ID)
+	require.Equal(t, createAccount.ID, deleteAccount.ID)
+	require.NoError(t, err)
+	//retrieve the deleted Account
+	deletedAccount, err := testStore.GetAccount(context.Background(), createAccount.ID)
+	require.Empty(t, deletedAccount)
+	require.EqualError(t, err, pgx.ErrNoRows.Error())
 }
