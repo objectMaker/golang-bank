@@ -44,3 +44,22 @@ func TestGetAccount(t *testing.T) {
 	require.Equal(t, newAccount.CreatedAt, queryAccount.CreatedAt)
 	require.Equal(t, newAccount.Currency, queryAccount.Currency)
 }
+
+func TestListAccounts(t *testing.T) {
+	arg := ListAccountsParams{
+		Owner:  "",
+		Limit:  5,
+		Offset: 0,
+	}
+	var lastAccount Account
+	for i := 0; i < 10; i++ {
+		lastAccount = createTestAccount(t)
+	}
+	arg.Owner = lastAccount.Owner
+	accounts, err := testStore.ListAccounts(context.Background(), arg)
+	require.NoError(t, err)
+	for _, account := range accounts {
+		require.Equal(t, account.Owner, lastAccount.Owner)
+		require.NotEmpty(t, account.ID)
+	}
+}
