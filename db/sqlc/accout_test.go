@@ -2,7 +2,6 @@ package db
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
 	"github.com/objectMaker/golang-bank/utils"
@@ -10,16 +9,18 @@ import (
 )
 
 func TestCreateAccount(t *testing.T) {
-	var a CreateAccountParams
-	a.Owner = utils.RandomName()
-	a.Balance = 100
-	a.Currency = utils.RandomName()
-	Account, err := testStore.CreateAccount(context.Background(), a)
+	var inputAccount CreateAccountParams
+	inputAccount.Owner = utils.RandomName()
+	inputAccount.Balance = utils.RandomInt(1, 100)
+	inputAccount.Currency = utils.RandomCurrency()
+
+	newAccount, err := testStore.CreateAccount(context.Background(), inputAccount)
+
 	if err != nil {
 		t.Error(err)
 	}
-	fmt.Println(a.Owner)
-	require.Equal(t, Account.Owner, a.Owner)
-	require.Equal(t, Account.Balance, a.Balance)
-	require.Equal(t, Account.Currency, a.Currency)
+
+	require.Equal(t, inputAccount.Owner, newAccount.Owner)
+	require.Equal(t, inputAccount.Balance, newAccount.Balance)
+	require.Equal(t, inputAccount.Currency, newAccount.Currency)
 }

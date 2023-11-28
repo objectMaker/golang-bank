@@ -31,3 +31,15 @@ func RandomName(nameLengthParams ...int) string {
 	}
 	return name
 }
+
+func RandomCurrency() string {
+	currencySlice := []string{
+		"CNY",
+		"USD",
+		"EUR",
+		"GBP",
+		"JPY",
+		"AUD",
+	}
+	return currencySlice[RandomInt(0, int64(len(currencySlice)-1))]
+}
