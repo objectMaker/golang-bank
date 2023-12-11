@@ -10,10 +10,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func createTestAccount(t *testing.T) Account {
+func CreateTestAccount(t *testing.T) Account {
 	inputAccount := CreateAccountParams{
 		Owner:    utils.RandomName(),
-		Balance:  utils.RandomInt(1, 100),
+		Balance:  utils.RandomInt(60, 100),
 		Currency: utils.RandomCurrency(),
 	}
 	newAccount, err := testStore.CreateAccount(context.Background(), inputAccount)
@@ -28,12 +28,12 @@ func createTestAccount(t *testing.T) Account {
 }
 
 func TestCreateAccount(t *testing.T) {
-	createTestAccount(t)
+	CreateTestAccount(t)
 }
 
 func TestGetAccount(t *testing.T) {
 	//create new account
-	newAccount := createTestAccount(t)
+	newAccount := CreateTestAccount(t)
 	//query the new account by account id
 	queryAccount, err := testStore.GetAccount(context.Background(), newAccount.ID)
 	if err != nil {
@@ -54,7 +54,7 @@ func TestListAccounts(t *testing.T) {
 	}
 	var lastAccount Account
 	for i := 0; i < 10; i++ {
-		lastAccount = createTestAccount(t)
+		lastAccount = CreateTestAccount(t)
 	}
 	arg.Owner = lastAccount.Owner
 	accounts, err := testStore.ListAccounts(context.Background(), arg)
@@ -66,7 +66,7 @@ func TestListAccounts(t *testing.T) {
 }
 
 func TestUpdateAccount(t *testing.T) {
-	newAccount := createTestAccount(t)
+	newAccount := CreateTestAccount(t)
 	newBalance := utils.RandomInt(1, 100)
 	arg := UpdateAccountParams{
 		ID:      newAccount.ID,
@@ -78,7 +78,7 @@ func TestUpdateAccount(t *testing.T) {
 }
 
 func TestDeleteAccount(t *testing.T) {
-	createAccount := createTestAccount(t)
+	createAccount := CreateTestAccount(t)
 	deleteAccount, err := testStore.DeleteAccount(context.Background(), createAccount.ID)
 	require.Equal(t, createAccount.ID, deleteAccount.ID)
 	require.NoError(t, err)

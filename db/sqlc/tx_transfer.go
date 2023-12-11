@@ -5,7 +5,7 @@ import "context"
 type TransferReq struct {
 	FromAccountID int64 `json:"from_account_id"`
 	ToAccountID   int64 `json:"to_account_id"`
-	Account       int64 `json:"account"`
+	Amount        int64 `json:"amount"`
 }
 
 // the transferRes
@@ -26,7 +26,7 @@ func (store *SqlStore) TransferTx(ctx context.Context, req *TransferReq) (Transf
 		transferRes.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
 			FromAccountID: req.FromAccountID,
 			ToAccountID:   req.ToAccountID,
-			Amount:        req.Account,
+			Amount:        req.Amount,
 		})
 		if err != nil {
 			return err
@@ -34,7 +34,7 @@ func (store *SqlStore) TransferTx(ctx context.Context, req *TransferReq) (Transf
 		//fourth: create to entry
 		transferRes.ToEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: req.ToAccountID,
-			Amount:    req.Account,
+			Amount:    req.Amount,
 		})
 		if err != nil {
 			return err
@@ -42,7 +42,7 @@ func (store *SqlStore) TransferTx(ctx context.Context, req *TransferReq) (Transf
 		//fifth: create from entry
 		transferRes.FromEntry, err = q.CreateEntry(ctx, CreateEntryParams{
 			AccountID: req.FromAccountID,
-			Amount:    -req.Account,
+			Amount:    -req.Amount,
 		})
 		if err != nil {
 			return err
