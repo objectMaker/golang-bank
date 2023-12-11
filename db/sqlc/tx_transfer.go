@@ -18,9 +18,9 @@ type TransferRes struct {
 }
 
 // create a transfer
-func (store *SqlStore) txTransfer(ctx context.Context, req *TransferReq) {
-	store.execTx(ctx, func(q *Queries) error {
-		var transferRes TransferRes
+func (store *SqlStore) TransferTx(ctx context.Context, req *TransferReq) (TransferRes, error) {
+	var transferRes TransferRes
+	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
 		//first: create a transfer
 		transferRes.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
@@ -64,4 +64,9 @@ func (store *SqlStore) txTransfer(ctx context.Context, req *TransferReq) {
 		//if everything fine return nil
 		return nil
 	})
+	if err != nil {
+		return transferRes, err
+	} else {
+		return transferRes, nil
+	}
 }

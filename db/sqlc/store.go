@@ -11,6 +11,7 @@ import (
 type Store interface {
 	Querier
 	execTx(ctx context.Context, fn func(*Queries) error) error
+	TransferTx(ctx context.Context, req *TransferReq) (TransferRes, error)
 }
 type SqlStore struct {
 	connPool *pgxpool.Pool
