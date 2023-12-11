@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 )
 
 func (store *SqlStore) execTx(ctx context.Context, fn func(*Queries) error) error {
@@ -17,6 +18,10 @@ func (store *SqlStore) execTx(ctx context.Context, fn func(*Queries) error) erro
 	txErr := fn(q)
 	// if user query failed return error
 	if txErr != nil {
+		rbErr := tx.Rollback(ctx)
+		if rbErr != nil {
+			return fmt.Errorf("tx err: %v, rb err: %v", err, rbErr)
+		}
 		return txErr
 	}
 	return tx.Commit(ctx)
