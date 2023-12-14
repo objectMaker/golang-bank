@@ -48,18 +48,18 @@ func (store *SqlStore) TransferTx(ctx context.Context, req *TransferReq) (Transf
 			return err
 		}
 		//TODO: change user balance
-		// //second: get to account to update its balance
-		// toAccount, err := q.GetAccount(ctx, req.ToAccountID)
-		// if err != nil {
-		// 	return err
-		// }
-		// transferRes.ToAccount = toAccount
-		// //third: get from account to update its balance
-		// fromAccount, err := q.GetAccount(ctx, req.FromAccountID)
-		// if err != nil {
-		// 	return err
-		// }
-		// transferRes.FromAccount = fromAccount
+		//second: get to account to update its balance
+		toAccount, err := q.GetAccount(ctx, req.ToAccountID)
+		if err != nil {
+			return err
+		}
+		transferRes.ToAccount = toAccount
+		//third: get from account to update its balance
+		fromAccount, err := q.GetAccount(ctx, req.FromAccountID)
+		if err != nil {
+			return err
+		}
+		transferRes.FromAccount = fromAccount
 
 		//if everything fine return nil
 		return nil
