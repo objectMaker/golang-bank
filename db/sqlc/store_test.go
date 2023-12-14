@@ -44,9 +44,11 @@ func TestTransferTx(t *testing.T) {
 		require.Equal(t, toAccount.ID, transferRes.ToEntry.AccountID)
 		require.Equal(t, amount, transferRes.ToEntry.Amount)
 		//from entry
-		require.Equal(t, toAccount.ID, transferRes.FromEntry.AccountID)
+		require.Equal(t, fromAccount.ID, transferRes.FromEntry.AccountID)
 		require.Equal(t, amount, -transferRes.FromEntry.Amount)
 		//test account balance
+		require.NotEmpty(t, transferRes.ToAccount)
+		require.NotEmpty(t, transferRes.FromAccount)
 		require.Equal(t, int(toAccount.Balance)+(i+1)*int(amount), transferRes.ToAccount.Balance)
 		require.Equal(t, int(fromAccount.Balance)-(i+1)*int(amount), transferRes.FromAccount.Balance)
 	}
