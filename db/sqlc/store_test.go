@@ -35,6 +35,7 @@ func TestTransferTx(t *testing.T) {
 		}()
 	}
 	for i := 0; i < loopCount; i++ {
+		currentLoopCount := int64(i + 1)
 		transferRes := <-transferResChannel
 		err := <-errChannel
 		require.NoError(t, err)
@@ -54,7 +55,7 @@ func TestTransferTx(t *testing.T) {
 		require.NotEmpty(t, transferRes.FromAccount)
 		fmt.Printf("ToAccountBalance %v %v \n", i+1, transferRes.ToAccount.Balance)
 		fmt.Printf("FromAccountBalance %v %v \n", i+1, transferRes.FromAccount.Balance)
-		require.Equal(t, toAccount.Balance+int64(i+1)*amount, transferRes.ToAccount.Balance)
-		require.Equal(t, fromAccount.Balance-int64(i+1)*amount, transferRes.FromAccount.Balance)
+		require.Equal(t, toAccount.Balance+currentLoopCount*amount, transferRes.ToAccount.Balance)
+		require.Equal(t, fromAccount.Balance-currentLoopCount*amount, transferRes.FromAccount.Balance)
 	}
 }
