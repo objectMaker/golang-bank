@@ -2,6 +2,7 @@ package db
 
 import (
 	"context"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/require"
@@ -20,8 +21,10 @@ func TestTransferTx(t *testing.T) {
 	loopCount := 2
 	for i := 0; i < loopCount; i++ {
 		// start go routine
+		currentIndex := i + 1
 		go func() {
-			transferRes, err := testStore.TransferTx(context.Background(), &TransferReq{
+			ctxWithValue := context.WithValue(context.Background(), BackgroundWithValueKey, currentIndex)
+			transferRes, err := testStore.TransferTx(ctxWithValue, &TransferReq{
 				FromAccountID: fromAccount.ID,
 				ToAccountID:   toAccount.ID,
 				Amount:        amount,
@@ -49,7 +52,9 @@ func TestTransferTx(t *testing.T) {
 		//test account balance
 		require.NotEmpty(t, transferRes.ToAccount)
 		require.NotEmpty(t, transferRes.FromAccount)
-		require.Equal(t, int(toAccount.Balance)+(i+1)*int(amount), transferRes.ToAccount.Balance)
-		require.Equal(t, int(fromAccount.Balance)-(i+1)*int(amount), transferRes.FromAccount.Balance)
+		fmt.Printf("ToAccountBalance %v %v \n", i+1, transferRes.ToAccount.Balance)
+		fmt.Printf("FromAccountBalance %v %v \n", i+1, transferRes.FromAccount.Balance)
+		require.Equal(t, toAccount.Balance+int64(i+1)*amount, transferRes.ToAccount.Balance)
+		require.Equal(t, fromAccount.Balance-int64(i+1)*amount, transferRes.FromAccount.Balance)
 	}
 }
